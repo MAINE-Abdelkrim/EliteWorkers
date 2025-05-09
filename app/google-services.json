@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "574441265567",
+    "project_id": "elit-a1473",
+    "storage_bucket": "elit-a1473.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:574441265567:android:53667e42a2591ae16ac5aa",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAk_cGvSgPWukPx5jQGI2l8MuBkLgq13-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
