@@ -3,6 +3,7 @@ agp = "8.7.3"
 circleimageview = "3.1.0"
 desugar_jdk_libs = "2.1.5"
 firebaseBom = "33.13.0"
+googlePlayServicesLocation = "21.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -11,6 +12,7 @@ material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
 playServicesLocationVersion = "21.0.1"
+playServicesMaps = "19.2.0"
 playServicesTasks = "18.3.0"
 firebaseAuth = "23.2.0"
 credentials = "1.5.0"
@@ -33,6 +35,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
+play-services-location-v2120 = { module = "com.google.android.gms:play-services-location", version.ref = "googlePlayServicesLocation" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 play-services-tasks = { group = "com.google.android.gms", name = "play-services-tasks", version.ref = "playServicesTasks" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }

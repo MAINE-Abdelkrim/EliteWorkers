@@ -31,33 +31,24 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
             <RadioButton
-                android:id="@+id/rbJobSeeker"
+                android:id="@+id/rbClient"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="@string/job_seeker" />
-
-            <RadioButton
-                android:id="@+id/rbEmployer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/employer" />
+                android:text="Client" />
 
             <RadioButton
                 android:id="@+id/rbCraftsman"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/craftsman" />
-
+                android:text="Ouvrier" />
         </RadioGroup>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilName"

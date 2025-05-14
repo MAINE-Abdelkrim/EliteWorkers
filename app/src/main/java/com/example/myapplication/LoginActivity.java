@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText etEmail, etPassword;
     private Button btnLogin, btnRegister;
-    private TextView tvForgotPassword;
+    private TextView tvForgotPassword ,tvRegisterPrompt ;
 
     private FirebaseAuth mAuth; // Firebase Auth instance
 
@@ -33,13 +33,38 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-        // Initialize UI components
+        tvRegisterPrompt = findViewById(R.id.tvRegisterPrompt);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
+
+        // Initialize UI components
+        final int[] tapCount = {0};
+        final long[] lastTapTime = {0};
+        tvRegisterPrompt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long currentTime = System.currentTimeMillis();
+
+                // Si le temps entre deux taps est supérieur à 2 secondes, on reset
+                if (currentTime - lastTapTime[0] > 2000) {
+                    tapCount[0] = 0;
+                }
+
+                tapCount[0]++;
+                lastTapTime[0] = currentTime;
+
+                if (tapCount[0] == 5) {
+                    tapCount[0] = 0;
+                    Toast.makeText(LoginActivity.this, "Accès admin détecté", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
 
         // Login button click listener
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -98,20 +123,24 @@ public class LoginActivity extends AppCompatActivity {
                                             String userType = documentSnapshot.getString("userType");
 
                                             switch (userType) {
-                                                case "JobSeeker":
-                                                    Toast.makeText(LoginActivity.this, "Bienvenue Job Seeker!", Toast.LENGTH_SHORT).show();
+                                                case "Client":
+                                                    Toast.makeText(LoginActivity.this, "Bienvenue Client!", Toast.LENGTH_SHORT).show();
+                                                    // Optional: redirect to ClientHomeActivity
                                                     break;
-                                                case "Employer":
-                                                    Toast.makeText(LoginActivity.this, "Bienvenue Employer!", Toast.LENGTH_SHORT).show();
+                                                case "Ouvrier":
+                                                    Toast.makeText(LoginActivity.this, "Bienvenue Ouvrier!", Toast.LENGTH_SHORT).show();
+                                                    // Optional: redirect to OuvrierHomeActivity
                                                     break;
-                                                case "Craftsman":
-                                                    Toast.makeText(LoginActivity.this, "Bienvenue Craftsman!", Toast.LENGTH_SHORT).show();
+                                                case "Admin":
+                                                    Toast.makeText(LoginActivity.this, "Bienvenue Admin!", Toast.LENGTH_SHORT).show();
+                                                    // Optional: redirect to AdminDashboardActivity
                                                     break;
                                                 default:
                                                     Toast.makeText(LoginActivity.this, "Type d'utilisateur inconnu", Toast.LENGTH_SHORT).show();
+                                                    return;
                                             }
 
-                                            // Redirection (tu peux adapter plus tard en fonction du type)
+                                            // Redirect to main app (adjust this if you want user-type-specific screens)
                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(intent);
@@ -130,5 +159,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
 }

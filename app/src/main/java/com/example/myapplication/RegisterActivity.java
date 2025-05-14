@@ -1,36 +1,25 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.AuthResult;
-import androidx.annotation.NonNull;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.android.material.textfield.TextInputEditText;
-
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-
     private RadioGroup rgUserType;
-    private RadioButton rbJobSeeker, rbEmployer, rbCraftsman;
+    private RadioButton rbClient, rbCraftsman;
     private TextInputEditText etName, etPhone, etEmail, etCity, etRegion, etPassword, etConfirmPassword;
     private Button btnRegister;
     private TextView tvLoginPrompt;
@@ -46,45 +35,26 @@ public class RegisterActivity extends AppCompatActivity {
         initViews();
         inflater = LayoutInflater.from(this);
 
-        //firebase
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        rgUserType.setOnCheckedChangeListener((group, checkedId) -> updateUserTypeSpecificFields(checkedId));
 
-        // Set up user type selection
-        rgUserType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                updateUserTypeSpecificFields(checkedId);
-            }
-        });
-
-        // Initial setup of user type fields
+        // Initial setup
         updateUserTypeSpecificFields(rgUserType.getCheckedRadioButtonId());
 
-        // Register button click listener
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateInputs()) {
-                    registerUser();
-                }
+        btnRegister.setOnClickListener(v -> {
+            if (validateInputs()) {
+                registerUser();
             }
         });
 
-        // Login prompt click listener
-        tvLoginPrompt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Go back to login activity
-            }
-        });
+        tvLoginPrompt.setOnClickListener(v -> finish());
     }
 
     private void initViews() {
         rgUserType = findViewById(R.id.rgUserType);
-        rbJobSeeker = findViewById(R.id.rbJobSeeker);
-        rbEmployer = findViewById(R.id.rbEmployer);
+        rbClient = findViewById(R.id.rbClient);
         rbCraftsman = findViewById(R.id.rbCraftsman);
         etName = findViewById(R.id.etName);
         etPhone = findViewById(R.id.etPhone);
@@ -99,29 +69,17 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void updateUserTypeSpecificFields(int checkedId) {
-        // Clear previous fields
         llUserTypeFields.removeAllViews();
-
-        if (checkedId == R.id.rbJobSeeker) {
-            // Add JobSeeker specific fields
-            addJobSeekerFields();
-        } else if (checkedId == R.id.rbEmployer) {
-            // Add Employer specific fields
-            addEmployerFields();
+        if (checkedId == R.id.rbClient) {
+            addClientFields();
         } else if (checkedId == R.id.rbCraftsman) {
-            // Add Craftsman specific fields
             addCraftsmanFields();
         }
     }
 
-    private void addJobSeekerFields() {
-        View jobSeekerView = inflater.inflate(R.layout.layout_job_seeker_fields, llUserTypeFields, false);
-        llUserTypeFields.addView(jobSeekerView);
-    }
-
-    private void addEmployerFields() {
-        View employerView = inflater.inflate(R.layout.layout_employer_fields, llUserTypeFields, false);
-        llUserTypeFields.addView(employerView);
+    private void addClientFields() {
+        View clientView = inflater.inflate(R.layout.layout_client_fields, llUserTypeFields, false);
+        llUserTypeFields.addView(clientView);
     }
 
     private void addCraftsmanFields() {
@@ -140,19 +98,16 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        // Validate name
         if (TextUtils.isEmpty(name)) {
             etName.setError("Name is required");
             isValid = false;
         }
 
-        // Validate phone
         if (TextUtils.isEmpty(phone)) {
             etPhone.setError("Phone is required");
             isValid = false;
         }
 
-        // Validate email
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Email is required");
             isValid = false;
@@ -161,19 +116,16 @@ public class RegisterActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        // Validate city
         if (TextUtils.isEmpty(city)) {
             etCity.setError("City is required");
             isValid = false;
         }
 
-        // Validate region
         if (TextUtils.isEmpty(region)) {
             etRegion.setError("Region is required");
             isValid = false;
         }
 
-        // Validate password
         if (TextUtils.isEmpty(password)) {
             etPassword.setError("Password is required");
             isValid = false;
@@ -182,7 +134,6 @@ public class RegisterActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        // Validate confirm password
         if (TextUtils.isEmpty(confirmPassword)) {
             etConfirmPassword.setError("Confirm password is required");
             isValid = false;
@@ -191,51 +142,35 @@ public class RegisterActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        // Validate user type specific fields
-        if (rgUserType.getCheckedRadioButtonId() == R.id.rbJobSeeker) {
-            // Validate JobSeeker fields
-            isValid = validateJobSeekerFields() && isValid;
-        } else if (rgUserType.getCheckedRadioButtonId() == R.id.rbEmployer) {
-            // Validate Employer fields
-            isValid = validateEmployerFields() && isValid;
-        } else if (rgUserType.getCheckedRadioButtonId() == R.id.rbCraftsman) {
-            // Validate Craftsman fields
+        int checkedId = rgUserType.getCheckedRadioButtonId();
+        if (checkedId == R.id.rbClient) {
+            isValid = validateClientFields() && isValid;
+        } else if (checkedId == R.id.rbCraftsman) {
             isValid = validateCraftsmanFields() && isValid;
         }
 
         return isValid;
     }
 
-    private boolean validateJobSeekerFields() {
-        // Get job seeker specific fields and validate them
-        // For this template, we'll return true. In a real app, add validation logic.
-        return true;
-    }
-
-    private boolean validateEmployerFields() {
-        // Get employer specific fields and validate them
-        // For this template, we'll return true. In a real app, add validation logic.
+    private boolean validateClientFields() {
+        // Add validation for client-specific fields if needed
         return true;
     }
 
     private boolean validateCraftsmanFields() {
-        // Get craftsman specific fields and validate them
-        // For this template, we'll return true. In a real app, add validation logic.
+        // Add validation for craftsman-specific fields if needed
         return true;
     }
 
     private void registerUser() {
-        // Get user type
         String userType = "";
-        if (rgUserType.getCheckedRadioButtonId() == R.id.rbJobSeeker) {
-            userType = "JobSeeker";
-        } else if (rgUserType.getCheckedRadioButtonId() == R.id.rbEmployer) {
-            userType = "Employer";
-        } else if (rgUserType.getCheckedRadioButtonId() == R.id.rbCraftsman) {
-            userType = "Craftsman";
+        int checkedId = rgUserType.getCheckedRadioButtonId();
+        if (checkedId == R.id.rbClient) {
+            userType = "Client";
+        } else if (checkedId == R.id.rbCraftsman) {
+            userType = "Ouvrier";
         }
 
-        // Get common user data
         String name = etName.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
@@ -244,31 +179,24 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         String finalUserType = userType;
+
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            String uid = mAuth.getCurrentUser().getUid();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        String uid = mAuth.getCurrentUser().getUid();
+                        User user = new User(uid, name, phone, email, city, region, finalUserType);
 
-                            User user = new User(uid,name, phone, email, city, region, finalUserType);
+                        db.collection("users").document(uid)
+                                .set(user)
+                                .addOnSuccessListener(aVoid ->
+                                        Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(RegisterActivity.this, "Failed to save user data: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
-                            db.collection("users").document(uid)
-                                    .set(user)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(RegisterActivity.this, "Failed to save user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                    });
-
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
+                        finish();
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-
-
     }
 }
