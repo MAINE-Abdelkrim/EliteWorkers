@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@android:drawable/stat_notify_chat"
+        android:icon="@drawable/baseline_house_24"
         android:title="@string/home" />
 
 
@@ -15,6 +15,6 @@
 
     <item
         android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_profile"
+        android:icon="@drawable/baseline_co_present_24"
         android:title="@string/profile" />
 </menu>
